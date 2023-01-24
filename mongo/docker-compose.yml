@@ -1,0 +1,27 @@
+---
+version: '3.3'
+services:
+  mongo:
+    container_name: mongo
+    hostname: mongo
+    # Although mongo:4.4.18 is claimed to be ok, it still reported this issue during restart:
+    # WARNING: MongoDB 5.0+ requires a CPU with AVX support, and your current system does not appear to have that!
+    # mongo:3.2.16 doesn't have this issue and is good enough
+    #image: mongo:4.4.18
+    image: mongo:3.2.16
+    expose:
+      - 27017
+    volumes:
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ./mongo:/data/db
+    command: mongod --logpath=/dev/null
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+      - MONGO_INITDB_DATABASE=explorerdb
+      - MONGO_LOG_DIR=/dev/null
+    networks:
+      - local_backend
+networks:
+  local_backend:
+    name: local_backend

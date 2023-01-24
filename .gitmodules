@@ -1,0 +1,3 @@
+[submodule ".iquidus-explorer"]
+	path = .iquidus-explorer
+	url = https://github.com/iquidus/explorer

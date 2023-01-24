@@ -1,0 +1,23 @@
+---
+version: '3.3'
+services:
+  iquidus-explorer:
+    build:
+      context: ../.iquidus-explorer
+      dockerfile: ../iquidus-explorer/Dockerfile
+    container_name: iquidus-explorer
+    hostname: iquidus-explorer
+    restart: always
+    volumes:
+      - ./settings.json:/app/settings.json:ro
+    expose:
+      - 3001
+    environment:
+      - VIRTUAL_HOST=${VIRTUAL_HOST}
+      - VIRTUAL_PORT=3001
+    command: npm start
+    networks:
+      - local_backend
+networks:
+  local_backend:
+    name: local_backend

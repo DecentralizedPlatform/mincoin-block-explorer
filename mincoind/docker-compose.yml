@@ -1,0 +1,27 @@
+---
+version: '3.3'
+services:
+  mincoind:
+    image: mincoin/mincoin-0-14.3:latest
+    container_name: mincoind
+    hostname: mincoind
+    restart: always
+    volumes:
+      - ./.mincoin:/root/.mincoin/
+    # 172.18.0.0/16 is the cidr determined with command "docker network inspect local_backend"
+    # -server: serving as a RPC server at port 9335
+    # -printtoconsole: instead of "debug.log", logs will be printed to console and collected by docker daemon, can be examined with "docker logs" command
+    # -rpcallowip: allow containers in the same docker network (on the same server) to make JSON-RPC call to this container
+    # -rpcuser/rpcpassword: declare user and pass to use to call this JSON-RPC server
+    command: ./bin/mincoind -server -rest -printtoconsole -rpcbind=0.0.0.0 -rpcallowip=${RPC_ALLOW_IP:-172.18.0.0/16} -rpcuser=mincoin -rpcpassword=mincoin
+    expose:
+      - 9335
+      - 9334
+    #ports:
+      #- 9335:9335
+      #- 9334:9334
+    networks:
+      - local_backend
+networks:
+  local_backend:
+    name: local_backend
